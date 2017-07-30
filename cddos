@@ -1,0 +1,46 @@
+if (!isset($_SESSION)) { // Verificamos se existe uma session ativa
+session_start();
+ob_start('ob_gzhandler');
+$_SESSION['IPAntiDDoS'] = $_SERVER['REMOTE_ADDR'];
+$IpUltimaRequisicao = $_SESSION['IPAntiDDoS']; 
+ 
+}
+if($_SESSION['last_session_request'] > time() - 2){
+// verificamos o time da ultima solicitação dos usuários, caso a mesma tenha menos de 2 segundos redirecionamos para esta página abaixo.
+ 
+ header("HTTP/1.0 503 Service Temporarily Unavailable");
+ header("Connection: close");
+ header("Content-Type: text/html");
+echo "<!DOCTYPE html>
+ <html>
+ <head>
+ <meta charset='UTF-8'/>
+ <title>503 sistema temporariamente indisponível</title>
+ <style>
+ body
+ {
+ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+ font-size: 16;
+ padding: 7;
+ letter-spacing: 0.3px;
+ word-spacing: 1px;
+ line-height: 23px;
+ background-<a href="http://charlescorrea.com.br/blog/tag/color">color</a>:#d6d6d6;
+ color:#666666;
+ text-align: center;
+ padding: 8px;
+ }
+ </style>
+ </head>
+ 
+ <body><br/><br/><br/><br/><br/><br/>
+ <h1>Acesso ao sistema temporário negado</h1>
+ Demasiadas páginas foram vistas rapidamente pelo seu endereço IP $IpUltimaRequisicao com menos de 2 segundos de diferença entre uma e outra.<br/>
+ Caso tenha dúvidas entre em <a href="http://charlescorrea.com.br/blog/contato">contato</a> com nossa equipe.
+ </body>
+ </html>
+ ";
+die();
+}
+ 
+$_SESSION['last_session_request'] = time(); // criamos uma session com o tempo da ultima solicitação
